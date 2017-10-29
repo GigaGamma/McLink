@@ -1,0 +1,5 @@
+main: link.mc.McLink
+name: McLink
+version: 0.0.1-Beta
+author: GigaGamma and ElementalNetwork
+description: An API that links plugins
