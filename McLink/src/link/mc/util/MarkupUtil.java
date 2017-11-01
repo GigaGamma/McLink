@@ -29,7 +29,7 @@ public class MarkupUtil {
 	public enum Surrounders {
 			
 		BOLD_1 ("\\*\\*", ChatColor.translateAlternateColorCodes('&', "&l$2&r")),
-		BOLD_2 ("__", ChatColor.translateAlternateColorCodes('&', "&l$2&r")),
+		BOLD_2 ("__", ChatColor.translateAlternateColorCodes('&', "&n$2&r")),
 		ITALIC_1 ("\\*", ChatColor.translateAlternateColorCodes('&', "&o$2&r")),
 		ITALIC_2 ("_", ChatColor.translateAlternateColorCodes('&', "&o$2&r")),
 		STRIKETHROUGH ("~~", ChatColor.translateAlternateColorCodes('&', "&m$2&r")),

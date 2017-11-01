@@ -1,6 +1,7 @@
 package link.mc;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -35,9 +36,19 @@ public class Chat implements Listener {
 		for (String m : rm) {
 			event.setMessage(event.getMessage().replace(m, MarkupUtil.markupToChat("&aqua **" + m + "**&")));
 			if (event.getRecipients() != null) {
-				for (Player p : event.getRecipients()) {
+				Iterator<Player> i = event.getRecipients().iterator();
+				/*for (Player p : event.getRecipients()) {
 					if (m.replace("@", "").equalsIgnoreCase(p.getName()) || (m.replace("@", "").equalsIgnoreCase("everyone") && event.getPlayer().hasPermission("mclink.mention.everyone"))) {
 						event.getRecipients().remove(p);
+						p.sendMessage(MarkupUtil.markupToChat("&yellow [Mentioned]& [") + event.getPlayer().getDisplayName() + "] " + event.getMessage());
+						p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 3.0F, 0.5F);
+					}
+				}*/
+				while (i.hasNext()) {
+					Player p = i.next();
+					
+					if (m.replace("@", "").equalsIgnoreCase(p.getName()) || (m.replace("@", "").equalsIgnoreCase("everyone") && event.getPlayer().hasPermission("mclink.mention.everyone"))) {
+						i.remove();
 						p.sendMessage(MarkupUtil.markupToChat("&yellow [Mentioned]& [") + event.getPlayer().getDisplayName() + "] " + event.getMessage());
 						p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 3.0F, 0.5F);
 					}
