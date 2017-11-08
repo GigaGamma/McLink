@@ -5,6 +5,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
+import link.mc.util.MarkupUtil;
+
 public class ItemMetaConstruct {
 	
 	private ItemConstruct item;
@@ -22,7 +24,7 @@ public class ItemMetaConstruct {
 	}
 	
 	public ItemMetaConstruct setName(String name) {
-		getMeta().setDisplayName("&r".replace('&', '§') + name.replace('&', '§'));
+		getMeta().setDisplayName("&r".replace('&', '§') + MarkupUtil.markupToChat(name));
 		return this;
 	}
 	
@@ -42,7 +44,6 @@ public class ItemMetaConstruct {
 		return this;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public ItemMetaConstruct setData(short data) {
 		item.setDurability(data);
 		

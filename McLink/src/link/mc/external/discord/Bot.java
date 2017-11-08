@@ -2,6 +2,7 @@ package link.mc.external.discord;
 
 import javax.security.auth.login.LoginException;
 
+import link.mc.McLink;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -20,7 +21,7 @@ public class Bot {
 		try {
 			bot = new JDABuilder(AccountType.BOT)
 					.addEventListener(listener)
-					.setToken("MzcyOTQ5MzMxNzAxMDA2MzM3.DNLnuA.GdHJgqHD3rcXoWO8TcX0O2JJNo8")
+					.setToken(McLink.config.bot.key)
 					.setEnableShutdownHook(true)
 					.buildBlocking();
 			listener.bot = this;

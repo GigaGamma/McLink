@@ -6,12 +6,20 @@ public class ItemPosition {
 	
 	public int x;
 	public int y;
+	
 	public ItemStack item;
+	public Component component;
 	
 	public ItemPosition(int x, int y, ItemStack item) {
+		this(x, y, item, null);
+	}
+	
+	public ItemPosition(int x, int y, ItemStack item, Component component) {
 		this.x = x;
 		this.y = y;
+		
 		this.item = item;
+		this.component = component;
 	}
 	
 	public int calculatePosition() {

@@ -17,6 +17,13 @@ public class CommandConstruct {
 					catch (Exception e) {
 						System.out.println(e);
 					}*/
+				} else if (pattern[i].equalsIgnoreCase("number")) {
+					try {
+						Float.valueOf(args[i]);
+					}
+					catch (Exception e) {
+						return false;
+					}
 				}
 				
 				else if (pattern[i].equalsIgnoreCase("player") && PlayerUtil.getPlayer(args[i]) == null) {
