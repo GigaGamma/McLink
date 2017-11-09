@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -11,6 +12,8 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,6 +29,7 @@ import link.mc.external.discord.BotThread;
 import link.mc.external.discord.BroadcastCommand;
 import link.mc.external.discord.McLinkBotCommand;
 import link.mc.external.verify.VerifyCommand;
+import link.mc.js.McJs;
 import link.mc.secure.ActionFactory;
 import link.mc.updater.UpdateCommand;
 import link.mc.util.Logg;
@@ -40,6 +44,7 @@ public class McLink extends JavaPlugin {
 	
 	public static McLink instance;
 	public static McLinkConfig config;
+	public FileConfiguration cfg;
 	
 	public Bot bot;
 	public OutputStream logCapturingStream;
@@ -58,12 +63,18 @@ public class McLink extends JavaPlugin {
 	};
 	
 	@Override
-	public void onEnable() {
+	public void onEnable() {		
 		McLink.instance = this;
 		McLink.config = new McLinkConfig();
-		Configurator.read(McLink.config, getConfig());
 		
-		database = new Database(new File("plugins/.db"));
+		System.out.println("McLink config path is " + McLink.instance.getDataFolder().getAbsolutePath().toLowerCase());
+		cfg = YamlConfiguration.loadConfiguration(Paths.get(McLink.instance.getDataFolder().getAbsolutePath(), "config.yml").toFile());
+		
+		System.out.println(cfg.getString("username"));
+		//Configurator.read(McLink.config, YamlConfiguration.loadConfiguration(Paths.get(McLink.instance.getDataFolder().getAbsolutePath(), "config.yml").toFile()));
+		Configurator.read(McLink.config, cfg);
+		
+		database = new Database(Paths.get(McLink.instance.getDataFolder().getParentFile().getAbsolutePath(), ".db").toFile());
 		
 		logCapturingStream = new ByteArrayOutputStream();
 		Handler[] handlers = Bukkit.getLogger().getParent().getHandlers();
@@ -88,6 +99,8 @@ public class McLink extends JavaPlugin {
 		Commands.register(new VerifyCommand());
 		Commands.register(BalanceCommand.create());
 		
+		McJs.init();
+		
 		//bot.broadcast(new MessageBuilder().setEmbed(new EmbedBuilder().setColor(Color.GREEN).setTitle("All is good! Systems operational!").build()).build());
 		
 		Bukkit.getPluginManager().registerEvents(new Chat(), this);
@@ -102,7 +115,6 @@ public class McLink extends JavaPlugin {
 		try {
 			McLink.instance.database.getConnection().commit();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

@@ -51,7 +51,10 @@ public class Chat implements Listener {
 					
 					if (m.replace("@", "").equalsIgnoreCase(p.getName()) || (m.replace("@", "").equalsIgnoreCase("everyone") && event.getPlayer().hasPermission("mclink.mention.everyone"))) {
 						i.remove();
-						p.sendMessage(MarkupUtil.markupToChat("&yellow [Mentioned]& [") + event.getPlayer().getDisplayName() + "] " + event.getMessage());
+						if (event.getPlayer() != null)
+							p.sendMessage(MarkupUtil.markupToChat("&yellow [Mentioned]& [") + event.getPlayer().getDisplayName() + "] " + MarkupUtil.markupToChat(event.getMessage()));
+						else
+							p.sendMessage(MarkupUtil.markupToChat("&yellow [Mentioned]& ") + MarkupUtil.markupToChat(event.getMessage()));
 						p.playSound(p.getLocation(), Sound.BLOCK_WOOD_BUTTON_CLICK_ON, 3.0F, 0.5F);
 					}
 				}
@@ -59,6 +62,12 @@ public class Chat implements Listener {
 		}
 		
 		event.setMessage(MarkupUtil.markupToChat(event.getMessage()));
+		
+		if (event.getPlayer() == null) {
+			System.out.println("Formatting for null");
+			for (Player p : event.getRecipients())
+				p.sendMessage(event.getMessage());
+		}
 		
 		//event.setFormat(MarkupUtil.markupToChat(""));
 	}

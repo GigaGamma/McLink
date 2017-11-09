@@ -5,5 +5,6 @@
 	<classpathentry kind="lib" path="C:/Users/augus/Documents/SuperiorCraft/CraftBukkit/target/craftbukkit-1.12.2-R0.1-SNAPSHOT.jar" sourcepath="C:/Users/augus/Documents/SuperiorCraft/CraftBukkit/src/main/java"/>
 	<classpathentry kind="lib" path="lib/JDA-3.3.0_260-withDependencies.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/jsplug-1.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

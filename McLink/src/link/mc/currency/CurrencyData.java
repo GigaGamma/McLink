@@ -41,11 +41,13 @@ public class CurrencyData {
 	}
 
 	public long getMoney() {
+		money = PlayerUtil.getMoney(player.getUniqueId().toString());
 		return money;
 	}
 
 	public void setMoney(long money) {
 		this.money = money;
+		PlayerUtil.setMoney(player.getUniqueId().toString(), money);
 	}
 	
 }

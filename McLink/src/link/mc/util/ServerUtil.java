@@ -1,9 +1,13 @@
 package link.mc.util;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import link.mc.McLink;
 
 public class ServerUtil {
 	
@@ -12,9 +16,15 @@ public class ServerUtil {
 	}
 	
 	public static void send(String message, Collection<? extends Player> people) {
-		for (Player player : people) {
-			player.sendMessage(message);
-		}
+		Bukkit.getScheduler().runTaskAsynchronously(McLink.instance, new Runnable() {
+			
+			@Override
+			public void run() {
+				System.out.println("A");
+				Bukkit.getPluginManager().callEvent(new AsyncPlayerChatEvent(true, null, message, new HashSet<Player>(people)));
+			}
+			
+		});
 	}
 	
 }
