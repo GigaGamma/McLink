@@ -1,5 +1,7 @@
 package link.mc.util;
 
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -24,6 +26,13 @@ public class CommandConstruct {
 					catch (Exception e) {
 						return false;
 					}
+				} else if (pattern[i].equalsIgnoreCase("wnumber")) {
+					try {
+						Integer.valueOf(args[i]);
+					}
+					catch (Exception e) {
+						return false;
+					}
 				}
 				
 				else if (pattern[i].equalsIgnoreCase("player") && PlayerUtil.getPlayer(args[i]) == null) {
@@ -40,6 +49,11 @@ public class CommandConstruct {
 				
 				else if (pattern[i].equalsIgnoreCase("offplayer") && PlayerUtil.getOfflinePlayer(args[i]) != null) {
 					
+				}
+				
+				else if (pattern[i].contains("|")) {
+					if (Arrays.asList(pattern[i].split("|")).contains(args[i]))
+						continue;
 				}
 				
 				else if (args[i].equalsIgnoreCase(pattern[i])) {
