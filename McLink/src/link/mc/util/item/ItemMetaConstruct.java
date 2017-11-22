@@ -50,6 +50,10 @@ public class ItemMetaConstruct {
 		return this;
 	}
 	
+	public ItemMetaConstruct setAttackSpeed(float time) {
+		return this;
+	}
+	
 	public ItemMeta getMeta() {
 		return meta;
 	}

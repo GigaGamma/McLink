@@ -27,4 +27,8 @@ public class ServerUtil {
 		});
 	}
 	
+	public static String getLanguage() {
+		return McLink.config.lang;
+	}
+	
 }

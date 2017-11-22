@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 
 import link.mc.external.discord.BotCommand;
+import link.mc.kryan.VCommand;
 import link.mc.reflection.BukkitAdapter;
 
 public class Commands {
@@ -30,6 +31,16 @@ public class Commands {
 	public static Command register(Command command) {
 		Commands.getCommandMap().register("", command);
 		return command;
+	}
+	
+	public static VCommand kryan(Class<?> cl) {
+		link.mc.kryan.Command c = (link.mc.kryan.Command) cl.getAnnotation(link.mc.kryan.Command.class);
+		VCommand v = new VCommand(cl, c.name(), c.description(), c.usage(), new ArrayList<String>());
+		v.c = cl;
+		
+		register(v);
+		
+		return v;
 	}
 	
 	public static ArrayList<BotCommand> getBotCommands() {

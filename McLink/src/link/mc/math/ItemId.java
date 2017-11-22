@@ -16,7 +16,8 @@ public class ItemId {
 		return UUID.randomUUID().toString();
 	}
 	
-	public static ItemStack attach(ItemStack i, String id) {
+	public static ItemStack attach(ItemStack it, String id) {
+		ItemStack i = it.clone();
 		ItemMeta m = i.getItemMeta();
 		
 		List<String> lore = new ArrayList<String>();

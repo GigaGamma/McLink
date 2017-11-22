@@ -1,0 +1,8 @@
+info:
+  language:
+    name: English (United States)
+    id: en_US
+
+util: 
+  welcome: "%player%, welcome to %server%!"
+  join: "Hey %player%, wassup!?"

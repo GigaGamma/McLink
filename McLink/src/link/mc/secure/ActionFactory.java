@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import link.mc.McLink;
+import link.mc.command.McLinkCommand;
 import link.mc.util.ImageUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -42,8 +43,12 @@ public class ActionFactory implements Listener {
 		if (!event.getPlayer().isOnGround() && vd < -0.1 && vd < 0.1)
 			event.getPlayer().sendMessage(String.valueOf(vd));*/
 		
-		if (event.getFrom().distance(event.getTo()) > 0.75 && !event.getPlayer().hasPotionEffect(PotionEffectType.SPEED) && !event.getPlayer().isFlying() && !event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+		/*if (event.getFrom().distance(event.getTo()) > 0.75 && !event.getPlayer().hasPotionEffect(PotionEffectType.SPEED) && !event.getPlayer().isFlying() && !event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
 			ActionFactory.log(Cheats.SPEED_HACKING, event.getPlayer());
+		}*/
+		
+		if (McLinkCommand.FREEZED.contains(event.getPlayer())) {
+			event.setCancelled(true);
 		}
 	}
 	

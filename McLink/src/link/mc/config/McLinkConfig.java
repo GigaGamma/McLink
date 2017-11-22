@@ -15,4 +15,7 @@ public class McLinkConfig {
 	@OptionalField
 	public CurrencyConfig currency = new CurrencyConfig();
 	
+	@OptionalField
+	public String lang = "en_US";
+	
 }

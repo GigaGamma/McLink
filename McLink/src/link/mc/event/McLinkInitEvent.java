@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import link.mc.McLink;
 import link.mc.util.MarkupUtil;
 
 public class McLinkInitEvent extends Event {
@@ -21,6 +22,10 @@ public class McLinkInitEvent extends Event {
 
 	public static HandlerList getHandlerList() {
 		return handlers;
+	}
+	
+	public String getVersion() {
+		return McLink.VERSION;
 	}
 
 }

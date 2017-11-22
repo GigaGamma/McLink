@@ -1,75 +1,66 @@
 package link.mc.command;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-
-import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vex;
+import org.bukkit.entity.Wither;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.Permission;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import link.mc.Chat;
-import link.mc.McLink;
 import link.mc.event.ActionBind;
 import link.mc.event.InteractRunnable;
-import link.mc.gui.Page;
+import link.mc.kryan.Command;
 import link.mc.math.ItemId;
 import link.mc.secure.ActionFactory;
-import link.mc.secure.AdminLayout;
-import link.mc.secure.Cheats;
-import link.mc.util.CommandConstruct;
 import link.mc.util.MarkupUtil;
 import link.mc.util.PlayerUtil;
 import link.mc.util.ServerUtil;
 import link.mc.util.item.ItemConstruct;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
 
-public class McLinkCommand extends Command {
+@Command(name = "mclink", description = "McLink's command")
+public class McLinkCommand {
 	
 	private static final String ADMIN = "admin";
+	private static final String PUNISH = "punish";
 	private static final String CHAT = "chat";
 	
-	private static final String[] KICK = new String[] {ADMIN, "kick", "player", "string"};
-	private static final String[] BAN = new String[] {ADMIN, "ban", "player", "string"};
-	private static final String[] UNBAN = new String[] {ADMIN, "unban", "offplayer"};
-	private static final String[] CLOAK = new String[] {ADMIN, "cloak"};
-	private static final String[] UNCLOAK = new String[] {ADMIN, "uncloak"};
-	private static final String[] INVSEE = new String[] {ADMIN, "invsee", "player"};
-	private static final String[] STICK = new String[] {ADMIN, "stick"};
-	private static final String[] SWAT_COMMAND = new String[] {ADMIN, "swat"};
-	private static final String[] CHATMODE = new String[] {CHAT, "mode", "all|mc|discord"};
-	private static final String[] CLEAR = new String[] {CHAT, "clear", "wnumber"};
+	public static final String[] KICK = new String[] {ADMIN, "kick", "player", "string"};
+	public static final String[] BAN = new String[] {ADMIN, "ban", "player", "string"};
+	public static final String[] UNBAN = new String[] {ADMIN, "unban", "offplayer"};
+	public static final String[] CLOAK = new String[] {ADMIN, "cloak"};
+	public static final String[] UNCLOAK = new String[] {ADMIN, "uncloak"};
+	public static final String[] INVSEE = new String[] {ADMIN, "invsee", "player"};
+	public static final String[] STICK = new String[] {ADMIN, "stick"};
+	public static final String[] SWAT_COMMAND = new String[] {ADMIN, "swat"};
+	public static final String[] CHATMODE = new String[] {CHAT, "mode", "all|mc|discord"};
+	public static final String[] CLEAR = new String[] {CHAT, "clear", "wnumber"};
+	public static final String[] PUNISH_FREEZE = new String[] {ADMIN, PUNISH, "freeze", "player"};
+	public static final String[] FRIDGE_COMMAND = new String[] {ADMIN, "fridge"};
+	public static final String[] WITHER_COMMAND = new String[] {ADMIN, "wither"};
+	public static final String[] SKIN = new String[] {ADMIN, "skin", "string"};
+	public static final String[] TRANSLATE = new String[] {ADMIN, "translate", "string"};
 	
 	public static final List<Player> CLOAKED = new ArrayList<Player>();
+	public static final List<Player> FREEZED = new ArrayList<Player>();
 	public static final ItemStack STICKODOOM = ItemId.attach(new ItemConstruct(Material.BLAZE_ROD).getMeta().setName("**Stick o' Doom**").getItem(), "mclink:stickofdoom");
 	public static final ItemStack SWAT = ItemId.attach(new ItemConstruct(Material.BLAZE_ROD).getMeta().setName("**The Swatter**").getItem(), "mclink:swat");
+	public static final ItemStack WITHER = ItemId.attach(new ItemConstruct(Material.SKULL_ITEM).getMeta().setName("**The Wither**").getItem(), "mclink:wither");
+	public static final ItemStack FRIDGE = ItemId.attach(new ItemConstruct(Material.ICE).getMeta().setName("**The Refrigerator**").getItem(), "mclink:fridge");
 	
 	/*
 	 * String name, String description, String usageMessage, List<String> aliases
 	 */
 	public McLinkCommand() {
-		super("mclink", "The McLink Command", "/mclink ...", new ArrayList<String>());
 		ActionBind.run.add(new InteractRunnable() {
 			
 			@Override
@@ -93,15 +84,13 @@ public class McLinkCommand extends Command {
 							if (targetBlock.getLocation().distance(e.getLocation()) < 10) {
 								if (e instanceof LivingEntity && e != getEvent().getPlayer()) {
 									((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 10000, 255, false, false));
-									PigZombie p = (PigZombie) getEvent().getPlayer().getWorld().spawn(getEvent().getPlayer().getLocation(), PigZombie.class);
-									p.setAnger(100);
-									p.setAngry(true);
+									Vex p = (Vex) getEvent().getPlayer().getWorld().spawn(getEvent().getPlayer().getLocation(), Vex.class);
 									p.setCustomName("Swat");
 									p.setCustomNameVisible(false);
 									p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10000, 10, false, false));
 									p.setTarget(((LivingEntity) e));
 									
-									for (PigZombie e2 : getEvent().getPlayer().getWorld().getEntitiesByClass(PigZombie.class)) {
+									for (Vex e2 : getEvent().getPlayer().getWorld().getEntitiesByClass(Vex.class)) {
 										if (e2.getCustomName().equals("Swat")) {
 											e2.setTarget(((LivingEntity) e));
 										}
@@ -116,15 +105,103 @@ public class McLinkCommand extends Command {
 						}
 					}
 					getEvent().setCancelled(true);
+				} else if (ItemId.same(getEvent().getItem(), McLinkCommand.WITHER)) {
+					for (Entity e : getEvent().getPlayer().getWorld().getEntities()) {
+						if (getEvent().getAction().equals(Action.RIGHT_CLICK_AIR) || getEvent().getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+						Block targetBlock = getEvent().getPlayer().getTargetBlock(null, 100);
+							if (targetBlock.getLocation().distance(e.getLocation()) < 10) {
+								if (e instanceof LivingEntity && e != getEvent().getPlayer()) {
+									//((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 10000, 255, false, false));
+									Wither p = (Wither) getEvent().getPlayer().getWorld().spawn(getEvent().getPlayer().getLocation(), Wither.class);
+									p.setCustomName("Wither Of Death");
+									p.setCustomNameVisible(false);
+									p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10000, 10, false, false));
+									p.setTarget(((LivingEntity) e));
+									
+									for (Wither e2 : getEvent().getPlayer().getWorld().getEntitiesByClass(Wither.class)) {
+										if (e2.getCustomName().equals("Wither Of Death")) {
+											e2.setTarget(((LivingEntity) e));
+										}
+									}
+									return;
+								}
+							}
+						} else {
+							if (e.getCustomName() != null && e.getCustomName().equals("Wither Of Death")) {
+								e.remove();
+							}
+						}
+					}
+					getEvent().setCancelled(true);
+				} else if (ItemId.same(getEvent().getItem(), McLinkCommand.FRIDGE)) {
+					for (Player e : Bukkit.getOnlinePlayers()) {
+						Block targetBlock = getEvent().getPlayer().getTargetBlock(null, 100);
+						if (targetBlock.getLocation().distance(e.getLocation()) < 10 && e != getEvent().getPlayer()) {
+							if (FREEZED.contains(e)) {
+								FREEZED.remove(e);
+							} else {
+								FREEZED.add(e);
+							}
+						}
+					}
+					getEvent().setCancelled(true);
 				}
 			}
 			
 		});
+		
+		
+	}
+	
+	@Command.Subcommand(args = {ADMIN, "kick", "player", "string"}, permission = "mclink.kick")
+	public void kick(CommandSender sender, String label, String[] args) {
+		Player p = PlayerUtil.getPlayer(args[2]);
+		p.kickPlayer(MarkupUtil.markupToChat("**McLink**\nYou were kicked by " + sender.getName() + " for " + MarkupUtil.markupToChat(args[3].replace("|", " "))));
+		sender.sendMessage(p.getName() + " kicked for " + MarkupUtil.markupToChat(args[3].replace("|", " ")));
+		ActionFactory.log("**" + p.getName() + " kicked** by " + sender.getName() +  " for `" + args[3].replace("|", " ") + "`", p, "Kick");
+	}
+	
+	@Command.Subcommand(args = {ADMIN, "cloak"}, permission = "mclink.cloak")
+	public void cloak(CommandSender sender, String label, String[] args) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				pl.hidePlayer(p);
+			}
+			if (!CLOAKED.contains(p))
+				CLOAKED.add(p);
+			ServerUtil.broadcast("&yellow " + p.getName() + " left the game&");
+		}
+	}
+	
+	@Command.Subcommand(args = {ADMIN, "uncloak"}, permission = "mclink.cloak")
+	public void uncloak(CommandSender sender, String label, String[] args) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			for (Player pl : Bukkit.getOnlinePlayers()) {
+				pl.showPlayer(p);
+			}
+			if (CLOAKED.contains(p))
+				CLOAKED.remove(p);
+			ServerUtil.broadcast("&yellow " + p.getName() + " joined the game&");
+		}
+	}
+	
+	@Command.Subcommand(args = {ADMIN, "rank", "player", "string"}, permission = "mclink.rank")
+	public void rank(CommandSender sender, String label, String[] args) {
+		Player p = PlayerUtil.getPlayer(args[2]);
+		
+		PlayerUtil.setRankId(p, args[3]);
+	}
+	
+	@Command.Subcommand(args = {"fly"}, permission = "mclink.fly")
+	public void fly(CommandSender sender, String label, String[] args) {
+		((Player) sender).setAllowFlight(!((Player) sender).getAllowFlight());
 	}
 
-	@Override
+	/*@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
-		/*if (args.length == 3) {
+		if (args.length == 3) {
 			if (args[0].equalsIgnoreCase("ac") && sender.hasPermission("mclink.testing")) {
 				if (args[1].equalsIgnoreCase("speed")) {
 					for (Player p : Bukkit.getOnlinePlayers()) {
@@ -135,7 +212,7 @@ public class McLinkCommand extends Command {
 					}
 				}
 			}
-		}*/
+		}
 		if (args.length == 0) {
 			Page p = new Page("McLink Administration", new AdminLayout());
 			p.registerEvents();
@@ -230,11 +307,31 @@ public class McLinkCommand extends Command {
 					}
 				}
 			}
+		} else if (CommandConstruct.match(args, PUNISH_FREEZE) && sender.hasPermission("mclink.freeze")) {
+			Player p = PlayerUtil.getPlayer(args[3]);
+			
+			if (FREEZED.contains(p)) {
+				FREEZED.remove(p);
+			} else {
+				FREEZED.add(p);
+			}
+		} else if (CommandConstruct.match(args, FRIDGE_COMMAND) && sender.hasPermission("mclink.freeze")) {
+			if (sender instanceof Player) {
+				Player p = (Player) sender;
+				p.getInventory().addItem(FRIDGE);
+			}
+		} else if (CommandConstruct.match(args, WITHER_COMMAND) && sender.hasPermission("mclink.wither")) {
+			if (sender instanceof Player) {
+				Player p = (Player) sender;
+				p.getInventory().addItem(WITHER);
+			}
+		} else if (CommandConstruct.match(args, TRANSLATE)) {
+			sender.sendMessage(Translator.translate("en_US", args[2]));
 		} else {
 			sender.sendMessage(CommandConstruct.getNoArgsMessage());
 		}
 		
 		return true;
-	}
+	}*/
 
 }

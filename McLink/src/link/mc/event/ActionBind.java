@@ -31,6 +31,7 @@ import link.mc.util.LoopUtil;
 public class ActionBind implements Listener {
 	
 	public static LoopUtil<InteractRunnable> run = new LoopUtil<InteractRunnable>();
+	public static LoopUtil<InventoryRunnable> invrun = new LoopUtil<InventoryRunnable>();
 	public static Map<Inventory, Chest> openchests = new HashMap<Inventory, Chest>();
 	
 	@EventHandler
@@ -62,7 +63,19 @@ public class ActionBind implements Listener {
 	}
 	
 	@EventHandler
+	public void click(InventoryClickEvent event) {
+		ListIterator<InventoryRunnable> in = invrun.update();
+		while (in.hasNext()) {
+			InventoryRunnable r = in.next();
+			r.setEvent(event);
+			r.run();
+		}
+	}
+	
+	@EventHandler
 	public void onInventoryMoveItem(InventoryInteractEvent event) {
+		//System.out.println("E");
+		
 		if (openchests.containsKey(event.getInventory())) {
 			System.out.println("move");
 			openchests.get(event.getInventory()).getInventory().setContents(event.getInventory().getContents());
