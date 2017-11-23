@@ -30,9 +30,9 @@ public class Page implements Gui, Listener {
 	
 	public Inventory compileItems() {
 		Inventory i = Bukkit.getServer().createInventory(null, this.layout.getSize(), this.name);
-		for (ItemPosition p : this.layout.getItems()) {
-			if (p.component != null) {
-				p.component.onLoad(this, p);
+		for (RawItemPosition p : this.layout.getItems()) {
+			if (p.getComponent() != null) {
+				p.getComponent().onLoad(this, p);
 			}
 			i.setItem(p.calculatePosition(), p.getItem());
 		}
@@ -56,9 +56,9 @@ public class Page implements Gui, Listener {
 	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		for (ItemPosition p : this.layout.getItems()) {
-			if (event.getRawSlot() == p.calculatePosition() && this.compiles.contains(event.getInventory()) && p.component != null) {
-				p.component.onClick(this, event);
+		for (RawItemPosition p : this.layout.getItems()) {
+			if (event.getRawSlot() == p.calculatePosition() && this.compiles.contains(event.getInventory()) && p.getComponent() != null) {
+				p.getComponent().onClick(this, event);
 			}
 		}
 	}

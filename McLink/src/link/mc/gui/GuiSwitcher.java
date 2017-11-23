@@ -14,7 +14,7 @@ public class GuiSwitcher implements Component {
 	}
 	
 	@Override
-	public void onLoad(Gui gui, ItemPosition item) {
+	public void onLoad(Gui gui, RawItemPosition item) {
 		
 	}
 

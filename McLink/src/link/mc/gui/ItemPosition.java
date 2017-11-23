@@ -2,13 +2,10 @@ package link.mc.gui;
 
 import org.bukkit.inventory.ItemStack;
 
-public class ItemPosition {
+public class ItemPosition extends RawItemPosition {
 	
 	public int x;
 	public int y;
-	
-	public ItemStack item;
-	public Component component;
 	
 	public ItemPosition(int x, int y, ItemStack item) {
 		this(x, y, item, null);
@@ -17,11 +14,11 @@ public class ItemPosition {
 	public ItemPosition(int x, int y, ItemStack item, Component component) {
 		this.x = x;
 		this.y = y;
-		
-		this.item = item;
-		this.component = component;
+		setItem(item);
+		setComponent(component);
 	}
 	
+	@Override
 	public int calculatePosition() {
 		return (this.y * 9) + this.x;
 	}
@@ -40,14 +37,6 @@ public class ItemPosition {
 
 	public void setY(int y) {
 		this.y = y;
-	}
-
-	public ItemStack getItem() {
-		return item;
-	}
-
-	public void setItem(ItemStack item) {
-		this.item = item;
 	}
 	
 }
