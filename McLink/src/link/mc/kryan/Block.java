@@ -34,7 +34,7 @@ public @interface Block {
 	}
 	
 	public static enum ActionType {
-		USE, PLACE
+		USE
 	}
 	
 	public static class Registry {
