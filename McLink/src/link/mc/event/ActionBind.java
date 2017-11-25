@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryEvent;
@@ -24,6 +26,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import link.mc.McLink;
 import link.mc.command.McLinkCommand;
 import link.mc.math.ItemId;
 import link.mc.util.LoopUtil;
@@ -31,6 +34,7 @@ import link.mc.util.LoopUtil;
 public class ActionBind implements Listener {
 	
 	public static LoopUtil<InteractRunnable> run = new LoopUtil<InteractRunnable>();
+	public static LoopUtil<BlockPlaceRunnable> placerun = new LoopUtil<BlockPlaceRunnable>();
 	public static LoopUtil<InventoryRunnable> invrun = new LoopUtil<InventoryRunnable>();
 	public static Map<Inventory, Chest> openchests = new HashMap<Inventory, Chest>();
 	
@@ -71,6 +75,22 @@ public class ActionBind implements Listener {
 			r.run();
 		}
 	}
+	
+	@EventHandler
+	public void blockPlace(BlockPlaceEvent event) {
+		ListIterator<BlockPlaceRunnable> in = placerun.update();
+		while (in.hasNext()) {
+			BlockPlaceRunnable r = in.next();
+			r.setEvent(event);
+			r.run();
+		}
+	}
+	
+	/*@EventHandler
+	public void blockBreak(BlockBreakEvent event) {
+		if (event.getBlock().hasMetadata("origin"))
+			event.getBlock().removeMetadata("origin", McLink.instance);
+	}*/
 	
 	@EventHandler
 	public void onInventoryMoveItem(InventoryInteractEvent event) {

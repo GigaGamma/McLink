@@ -14,6 +14,7 @@ import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 
 import link.mc.McLink;
 import link.mc.event.ActionBind;
+import link.mc.event.BlockPlaceRunnable;
 import link.mc.event.InteractRunnable;
 import link.mc.math.ItemId;
 
@@ -43,10 +44,28 @@ public class VBlock {
 							m.invoke(ins, getEvent());
 						}
 					}
-					else if (ItemId.same(getEvent().getItem(), ItemId.attach((ItemStack) VItem.getMainState(c).invoke(ins), c.getAnnotation(Item.class).id())) && (getEvent().getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+					/*else if (ItemId.same(getEvent().getItem(), ItemId.attach((ItemStack) VItem.getMainState(c).invoke(ins), c.getAnnotation(Item.class).id())) && getEvent().hasBlock() && (getEvent().getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
 						placeBlock(ins, c, getEvent().getClickedBlock().getLocation());
 						getEvent().setCancelled(true);
 						System.out.println("A");
+					}*/
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		});
+		
+		ActionBind.placerun.add(new BlockPlaceRunnable() {
+			
+			@Override
+			public void run() {
+				try {
+					if (ItemId.same(getEvent().getItemInHand(), ItemId.attach((ItemStack) VItem.getMainState(c).invoke(ins), c.getAnnotation(Item.class).id()))) {
+						getEvent().setCancelled(true);
+						placeBlock(ins, c, getEvent().getBlock().getLocation());
+						System.out.println(getEvent().getBlock().getLocation());
 					}
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					// TODO Auto-generated catch block
@@ -101,14 +120,6 @@ public class VBlock {
 			ItemStack s = (ItemStack) getMainState(c).invoke(ins, l);
 			l.getWorld().getBlockAt(l).setType(s.getType());
 			l.getWorld().getBlockAt(l).setData((byte) s.getDurability());
-			l.getWorld().getBlockAt(l).setMetadata("origin", new LazyMetadataValue(McLink.instance, CacheStrategy.CACHE_ETERNALLY, new Callable<Object>() {
-				
-				@Override
-				public Object call() throws Exception {
-					return ins.getClass().getName();
-				}
-				
-			}));
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			// TODO Auto-generated catch block
